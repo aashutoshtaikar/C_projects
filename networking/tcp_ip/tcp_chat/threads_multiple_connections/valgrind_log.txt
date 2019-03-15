@@ -1,0 +1,59 @@
+
+$ valgrind --leak-check=full --show-leak-kinds=all ./server 9002
+==29655== Memcheck, a memory error detector
+==29655== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==29655== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==29655== Command: ./server 9002
+==29655== 
+Client:113608448: hi
+
+Client:113608448: as
+
+^C==29655== 
+==29655== Process terminating with default action of signal 2 (SIGINT)
+==29655==    at 0x50546D7: accept (accept.c:26)
+==29655==    by 0x109096: main (server.c:113)
+==29655== 
+==29655== HEAP SUMMARY:
+==29655==     in use at exit: 280 bytes in 2 blocks
+==29655==   total heap usage: 6 allocs, 4 frees, 2,608 bytes allocated
+==29655== 
+==29655== 8 bytes in 1 blocks are still reachable in loss record 1 of 2
+==29655==    at 0x4C31D2F: realloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==29655==    by 0x1090C6: main (server.c:115)
+==29655== 
+==29655== 272 bytes in 1 blocks are possibly lost in loss record 2 of 2
+==29655==    at 0x4C31B25: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==29655==    by 0x40134A6: allocate_dtv (dl-tls.c:286)
+==29655==    by 0x40134A6: _dl_allocate_tls (dl-tls.c:530)
+==29655==    by 0x504B227: allocate_stack (allocatestack.c:627)
+==29655==    by 0x504B227: pthread_create@@GLIBC_2.2.5 (pthread_create.c:644)
+==29655==    by 0x10907C: main (server.c:109)
+==29655== 
+==29655== LEAK SUMMARY:==29655==    definitely lost: 0 bytes in 0 blocks
+==29655==    indirectly lost: 0 bytes in 0 blocks
+==29655==      possibly lost: 272 bytes in 1 blocks
+==29655==    still reachable: 8 bytes in 1 blocks
+==29655==         suppressed: 0 bytes in 0 blocks
+==29655== 
+==29655== For counts of detected and suppressed errors, rerun with: -v
+==29655== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+
+$ valgrind ./client 127.0.0.1 9002
+==30262== Memcheck, a memory error detector
+==30262== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==30262== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==30262== Command: ./client 127.0.0.1 9002
+==30262== 
+Client: hey
+Client: wassup
+Client: exit
+==30262== 
+==30262== HEAP SUMMARY:
+==30262==     in use at exit: 0 bytes in 0 blocks
+==30262==   total heap usage: 14 allocs, 14 frees, 12,808 bytes allocated
+==30262== 
+==30262== All heap blocks were freed -- no leaks are possible
+==30262== 
+==30262== For counts of detected and suppressed errors, rerun with: -v
+==30262== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
