@@ -50,7 +50,7 @@ void* read_from_client(void* v_newsockfd)
     close(newsockfd);
 }
 
-//shuts down the server on reading exit from stdin
+//daemon shuts down the server on reading exit from stdin
 void* shutdown_server(void* tmp)
 {    
     pthread_detach(pthread_self());
@@ -96,8 +96,8 @@ int main(int argc, char *argv[]){
     listen(sockfd, 5);
     clilen = sizeof(cli_addr);
     
-    thread_pool = (pthread_t*)malloc(sizeof(*thread_pool) * 1); //sizeof(pthread_t) is fine but sizeof(*thread_pool) its stays type safe
-    int accepted_conn_num = 0;
+    thread_pool = (pthread_t*)malloc(sizeof(*thread_pool) * 1); //sizeof(pthread_t) is fine but with sizeof(*thread_pool) its stays type safe
+    int accepted_conn_num = 0;  // index for accessing thread pool
     
     int state = 0;
     pthread_create(&exit_thread, NULL, shutdown_server, &state);

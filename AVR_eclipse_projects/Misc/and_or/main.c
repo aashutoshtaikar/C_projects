@@ -18,6 +18,9 @@
 #include <stdio.h>
 #include <lcd.h>
 
+int func(void (*func)(int som)){
+
+}
 
 
 int main(void) {
