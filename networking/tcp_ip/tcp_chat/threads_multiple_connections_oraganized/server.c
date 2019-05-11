@@ -63,8 +63,7 @@ void* shutdown_server(void* tmp)
     }  
 }
 
-int main(int argc, char* argv[]){
-    
+void init_server(){
     if (argc < 2){
         fprintf(stderr, "port not provided. program terminated\n");
         exit(1);
@@ -119,6 +118,11 @@ int main(int argc, char* argv[]){
     free(thread_pool); // need to do a lot more than this to avoid memory leaks
     
     close(sockfd);
+}
+
+int main(int argc, char* argv[]){
+    
+    
     return 0;
 }
 
