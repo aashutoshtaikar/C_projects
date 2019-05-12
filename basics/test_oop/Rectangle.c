@@ -13,24 +13,23 @@ rectangle_t* new_rectangle(void){
 
 rectangle_t* new_rectangle_with(char* name,float l, float b){
     rectangle_t* rect = (rectangle_t*)malloc(sizeof(rectangle_t));
-     rect->name = name;
-     rect->length = l;
-     rect->breadth = b;
-     rect->area = l*b;
-     rect->set_length = &set_length;
-     rect->set_breadth = &set_breadth;
+    rect->name = name;
+    rect->area = l*b;
+    rect->length = l;
+    rect->breadth = b;
+    rect->add_length = &add_length;
     return rect;
 }
 
-void set_length(rectangle_t* rect,float l){
-    rect->length = l;
+void add_length(rectangle_t* rect, float l){
+    rect->length += l;
+    rect->area = rect->length * rect->breadth;
 }
 
-void set_breadth(rectangle_t* rect,float b){
-    rect->breadth = b;
+void destroy(rectangle_t* rect){
+    free(rect);
+    rect = NULL;
 }
-
-
 
 void print_rectangle(rectangle_t* rect){
     printf(" name:%s\n length:%f\n breadth:%f\n area:%f\n ", rect->name, rect->length, rect->breadth, rect->area);

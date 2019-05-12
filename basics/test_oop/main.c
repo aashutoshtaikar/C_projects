@@ -4,9 +4,10 @@
 
 int main(){
     rectangle_t* x = new_rectangle();
-    // x = new_rectangle("ash", 1, 2);
-    x->set_length(x,1);
-    x->set_breadth(x,2);
+    x = new_rectangle_with("ash", 1, 2);
+    x->add_length(x,1);
     print_rectangle(x);
+    destroy(x);
+
     return 0;
 }
