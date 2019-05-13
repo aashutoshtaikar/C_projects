@@ -19,6 +19,7 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <pthread.h>
+#include "server_manager.h"
 
 //forward decls
 int guard(int return_value, char* err);
@@ -128,6 +129,8 @@ int main(int argc, char* argv[]){
         init_server(argv);
     }
     
+    close(sm->sockfd);
+    close(sm->newsockfd);
     return 0;
 }
 

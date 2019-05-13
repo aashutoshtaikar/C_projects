@@ -63,17 +63,28 @@ void* shutdown_server(void* tmp)
     }  
 }
 
-// void accept_connection(int* state){
+int get_status(int* state){
+    pthread_detach(pthread_self());
+    
+    while (*state != 0)
+    {
+        if (*state)
+            return *state;
+        return 0;
+    }
+}
+
+// void accept_connection(pthread_t* thread_pool,int sockfd, int newsockfd, struct sockaddr_in* cli_addr, socklen_t* clilen){
 //         newsockfd = guard( accept(sockfd, (struct sockaddr *)&cli_addr, &clilen), "error on accept" );
        
-//         thread_pool=(pthread_t*)realloc(thread_pool, sizeof(*thread_pool)*(accepted_conn_num+1)); //always realloc with correct ptr cast
+//         thread_pool = (pthread_t*)realloc(thread_pool, sizeof(*thread_pool)*(accepted_conn_num+1)); //always realloc with correct ptr cast
 //         if (thread_pool == NULL){
 //             printf("out of memory\n");
 //             exit(EXIT_FAILURE);
 //         }
         
 //         pthread_create(&thread_pool[accepted_conn_num], NULL, read_from_client, &newsockfd); //create a thread to read
-//         printf("\nhere\n");
+
 //         accepted_conn_num++;
 // }
 
@@ -92,7 +103,7 @@ int main(int argc, char* argv[]){
     socklen_t clilen;
 
     pthread_t* thread_pool;
-    pthread_t exit_thread;
+    pthread_t exit_thread, connection_thread;
 
     //create a socket and have a socket file descriptor
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -116,9 +127,11 @@ int main(int argc, char* argv[]){
     
     int state = 0;
     pthread_create(&exit_thread, NULL, shutdown_server, &state);
-    
+    pthread_t break_thread;
+
     while (!state)
     {
+        pthread_create(break_thread, NULL, get_status, &state);
 
         newsockfd = guard( accept(sockfd, (struct sockaddr *)&cli_addr, &clilen), "error on accept" );
        
