@@ -63,6 +63,20 @@ void* shutdown_server(void* tmp)
     }  
 }
 
+// void accept_connection(int* state){
+//         newsockfd = guard( accept(sockfd, (struct sockaddr *)&cli_addr, &clilen), "error on accept" );
+       
+//         thread_pool=(pthread_t*)realloc(thread_pool, sizeof(*thread_pool)*(accepted_conn_num+1)); //always realloc with correct ptr cast
+//         if (thread_pool == NULL){
+//             printf("out of memory\n");
+//             exit(EXIT_FAILURE);
+//         }
+        
+//         pthread_create(&thread_pool[accepted_conn_num], NULL, read_from_client, &newsockfd); //create a thread to read
+//         printf("\nhere\n");
+//         accepted_conn_num++;
+// }
+
 int main(int argc, char* argv[]){
     
     if (argc < 2){
@@ -96,7 +110,8 @@ int main(int argc, char* argv[]){
     listen(sockfd, 5);
     clilen = sizeof(cli_addr);
     
-    thread_pool = (pthread_t*)malloc(sizeof(*thread_pool) * 1); //sizeof(pthread_t) is fine but with sizeof(*thread_pool) its stays type safe
+    thread_pool = NULL;
+    //thread_pool = (pthread_t*)malloc(sizeof(*thread_pool) * 1); //sizeof(pthread_t) is fine but with sizeof(*thread_pool) its stays type safe
     int accepted_conn_num = 0;  // index for accessing thread pool
     
     int state = 0;
@@ -104,20 +119,26 @@ int main(int argc, char* argv[]){
     
     while (!state)
     {
+
         newsockfd = guard( accept(sockfd, (struct sockaddr *)&cli_addr, &clilen), "error on accept" );
-        
-        thread_pool=(pthread_t*)realloc(thread_pool,sizeof(*thread_pool)*(accepted_conn_num+1)); //always realloc with correct ptr cast
+       
+        thread_pool=(pthread_t*)realloc(thread_pool, sizeof(*thread_pool)*(accepted_conn_num+1)); //always realloc with correct ptr cast
         if (thread_pool == NULL){
             printf("out of memory\n");
             exit(EXIT_FAILURE);
         }
         
         pthread_create(&thread_pool[accepted_conn_num], NULL, read_from_client, &newsockfd); //create a thread to read
-       
+        printf("\nhere\n");
         accepted_conn_num++;
     }
-    free(thread_pool); // need to do a lot more than this to avoid memory leaks
     
+    //cleanup
+    for(int i=0; i<sizeof(thread_pool)/sizeof(*thread_pool);i++){
+        free(&thread_pool[i]);
+        thread_pool[i] = (long unsigned int)NULL;
+    }
+
     close(sockfd);
     return 0;
 }

@@ -8,6 +8,7 @@
     2. https://stackoverflow.com/questions/11160763/create-a-dynamic-number-of-threads
     3. https://jameshfisher.com/2017/02/28/tcp-server-pthreads.html // good way of using guard statements to reduce code clutter
  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h> //for read/write
@@ -20,8 +21,7 @@
 #include <pthread.h>
 
 //forward decls
-
-int guard(int return_value, char * err);
+int guard(int return_value, char* err);
 void* read_from_client(void* v_newsockfd);
 void* shutdown_server(void* tmp);
 
@@ -63,12 +63,7 @@ void* shutdown_server(void* tmp)
     }  
 }
 
-void init_server(){
-    if (argc < 2){
-        fprintf(stderr, "port not provided. program terminated\n");
-        exit(1);
-    }
-
+void init_server(char* argv[]){
     int sockfd; 
     int newsockfd; 
     int portno;
@@ -107,7 +102,7 @@ void init_server(){
         
         thread_pool=(pthread_t*)realloc(thread_pool,sizeof(*thread_pool)*(accepted_conn_num+1)); //always realloc with correct ptr cast
         if (thread_pool == NULL){
-            printf("out of memory\n");
+            printf("thread allocation error: out of memory\n");
             exit(EXIT_FAILURE);
         }
         
@@ -115,13 +110,23 @@ void init_server(){
        
         accepted_conn_num++;
     }
-    free(thread_pool); // need to do a lot more than this to avoid memory leaks
-    
+
+    for(int i=0; i<sizeof(thread_pool)/sizeof(*thread_pool);i++){
+        free(&thread_pool[i]); 
+        thread_pool[i] = NULL;
+    }
+
     close(sockfd);
 }
 
 int main(int argc, char* argv[]){
-    
+    if (argc < 2){
+        fprintf(stderr, "port not provided. program terminated\n");
+        exit(1);
+    }
+    else{
+        init_server(argv);
+    }
     
     return 0;
 }
