@@ -1,3 +1,4 @@
+# Building, inserting and removing the kernel
 
 ## Build the kernel object  
 hellokernel.c -> hellokernel.o -> hellokernel.ko  
@@ -10,21 +11,20 @@ sudo rmmod hellokernel.ko
 
 ## To see the modules loaded in the kernel:
 #### To see the modules already loaded
-dmesg 
-OR
+dmesg    
 
 #### To see the modules being loaded in real time
-gnome-terminal & disown      //open another terminal to do insmod and rmmod   
+gnome-terminal & disown      //open another terminal to do insmod and rmmod       
  
-sudo tail -f /var/log/syslog //for displaying the recent modules    
+sudo tail -f /var/log/syslog //for displaying the recent modules      
 
-## Makefiles
+# Makefiles 
 target … : prerequisites …
         recipe
         …
         …
 
-# Note:
+## Note:
 M=$(PWD) //pick up the makefile from the present working directory (/lib/modules/$(KVERSION)/build)
 
 # References
